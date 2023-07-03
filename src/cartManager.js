@@ -26,12 +26,16 @@ class CartManager {
         const carts = await this.read();
         return carts;
     }
-
+    
     getbyId = async (id) => {
-        const carts = await this.get();
-        return carts.find((cart) => cart.id == id);
+        try {
+          const list = await this.get();
+          return list.find((cart) => cart.id == id);
+        } catch (error) {
+          return { error: error.message };
+        }
     }
-
+    
     create = async () => {
         const carts = await this.get();
         const newID = this.getNewID(carts);

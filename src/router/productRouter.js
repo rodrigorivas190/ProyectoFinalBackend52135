@@ -21,7 +21,7 @@ router.get('/', async (req, res)=>{
 router.get('/:pid', async (req, res)=>{
     const pid = parseInt(req.params.pid);
     const prod = await productManager.getbyId(pid);
-    if(prod == -1) return res.status(404).send(`product not found`);
+    if(!prod) return res.status(404).send(`product not found`);
     return res.json(prod);
 })
 
@@ -40,7 +40,7 @@ router.put('/:pid', async (req, res) =>{
 
     const prod = await productManager.getbyId(pid);
     
-    if(prod == -1) return res.status(404).send(`product not found`);
+    if(!prod) return res.status(404).send(`product not found`);
     
     for(const prop in update){
         prod[prop] = update[prop];

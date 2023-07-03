@@ -25,6 +25,27 @@ router.get('/:cid', async (req, res)=>{
     return res.json({...cart.products});
 })
 
+router.post("/:cid/product/:pid", async (req, res) => {
+    const { cid, pid } = req.params;
+    const quantity = req.body.quantity || 1;
+    try {
+      const update = await cartManager.updateCart(
+        Number(cid),
+        Number(pid),
+        quantity
+      );
+      if (update) {
+        res
+          .status(200)
+          .json(`The product ${pid} in cart ${cid} was successfully updated`);
+      } else {
+        res.status(404).json({ error404: "Not Found" });
+      }
+    } catch (err) {
+      res.status(400).json({ error400: "Bad Request" });
+    }
+  });
+
 router.post('/', async (req, res)=>{
     const createCart = await cartManager.create();
     res.send({status: 'successful', createCart});
@@ -40,7 +61,7 @@ router.post('/:cid/products/:pid', async (req, res)=>{
 })
 
 router.delete('/:cid', async (req, res)=>{
-    const pid = parseInt(req.params.cid);
+    const cid = parseInt(req.params.cid);
     const nlist = await cartManager.delete(cid);
     if(!nlist) return res.status(404).send(`product not found`);
     res.send({status: 'update successful', nlist});
